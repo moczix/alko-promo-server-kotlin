@@ -1,4 +1,4 @@
-package com.moczix.alkohunters.app.controller
+package com.moczix.alkohunters.app.controller.user
 
 import com.moczix.alkohunters.app.model.Alcohol
 import com.moczix.alkohunters.app.persistence.AlcoholRepository
