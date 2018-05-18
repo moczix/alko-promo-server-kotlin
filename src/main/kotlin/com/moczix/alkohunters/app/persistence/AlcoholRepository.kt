@@ -6,4 +6,5 @@ import java.util.*
 
 interface AlcoholRepository : CrudRepository<Alcohol, Int> {
     fun findByBarcode(barcode: String): Optional<Alcohol>
+    fun findByAccepted(status: Int): Optional<Array<Alcohol>>
 }

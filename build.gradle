@@ -1,6 +1,7 @@
 buildscript {
 	ext {
 		kotlinVersion = '1.2.41'
+		jacksonVersion = '2.9.5'
 		springBootVersion = '2.0.2.RELEASE'
 	}
 	repositories {
@@ -56,6 +57,15 @@ dependencies {
 	compile("org.springframework.boot:spring-boot-devtools")
 	compile("org.springframework.boot:spring-boot-starter-security")
 	compile 'com.google.apis:google-api-services-oauth2:v1-rev141-1.23.0'
+
+	compile("com.fasterxml.jackson.core:jackson-databind:${jacksonVersion}")
+	compile("com.fasterxml.jackson.core:jackson-annotations:${jacksonVersion}")
+	compile("com.fasterxml.jackson.core:jackson-core:${jacksonVersion}")
+	compile "com.fasterxml.jackson.module:jackson-module-kotlin:2.9.+"
+
+
+	compile "org.imgscalr:imgscalr-lib:4.2"
+
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 
 

@@ -16,6 +16,10 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import java.util.ArrayList
+import org.springframework.security.core.authority.SimpleGrantedAuthority
+
+
 
 
 
@@ -33,7 +37,11 @@ class AuthenticationFilter : GenericFilterBean() {
             val googleProfile = GoogleProfile()
             if (googleProfile.isValid(token)) {
                 val user = userRep.findByGoogleId(googleProfile.getProfile().googleId)
-                val authentication = UsernamePasswordAuthenticationToken(user, null)
+                val authorities = ArrayList<SimpleGrantedAuthority>()
+                authorities.add(SimpleGrantedAuthority(
+                        if (user.get().status == 666) "ROLE_ADMIN" else "ROLE_USER"
+                ))
+                val authentication = UsernamePasswordAuthenticationToken(user, null, authorities)
                 authentication.details = WebAuthenticationDetailsSource().buildDetails(request)
                 SecurityContextHolder.getContext().authentication = authentication
             }

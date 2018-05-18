@@ -13,5 +13,6 @@ class CorsConfig : WebMvcConfigurer {
     override fun addCorsMappings(registry: CorsRegistry) {
         registry.addMapping("/**")
                 .allowCredentials(true).maxAge(3600)
+                .allowedMethods("GET", "PUT", "POST", "DELETE", "OPTIONS")
     }
 }
