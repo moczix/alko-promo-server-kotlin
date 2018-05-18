@@ -10,8 +10,9 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
 import javax.persistence.*
-
-
+import javax.validation.constraints.NotNull
+import javax.validation.constraints.Size
+import javax.validation.constraints.PositiveOrZero
 
 
 @Entity
@@ -26,13 +27,11 @@ class Alcohol(
         var image: String = "",
         var voltage: Double = 0.0,
         var capacity: Int = 0,
-        //var userId: Int = 0,
         var accepted: Boolean = false,
         var ocenPiwoUrl: String = "",
 
         @ManyToOne
         var user: User,
-
 
         @ManyToOne(optional = false)
         var category: Category,

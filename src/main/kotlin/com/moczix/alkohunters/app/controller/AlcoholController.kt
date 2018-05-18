@@ -2,8 +2,11 @@ package com.moczix.alkohunters.app.controller
 
 import com.moczix.alkohunters.app.model.Alcohol
 import com.moczix.alkohunters.app.persistence.AlcoholRepository
+import com.moczix.alkohunters.app.utils.ImageParser
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
+import java.awt.Image
+import javax.validation.Valid
 
 
 @RestController
@@ -33,11 +36,12 @@ class AlcoholController(val alcoholRepo: AlcoholRepository) {
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/{id}")
-    fun updateAlcohol(@PathVariable id: Int, @RequestBody alcohol: Alcohol) {
+    fun updateAlcohol(@PathVariable id: Int, @Valid @RequestBody alcohol: Alcohol) {
         assert(alcohol.id == id)
-        println(
-                alcohol.updatedAt
-        )
+        val imageParser = ImageParser()
+        if (imageParser.isValidURL(alcohol.image)) {
+            alcohol.image = imageParser.saveFileFromUrl(alcohol.image, alcohol.id.toString())
+        }
         alcoholRepo.save(alcohol)
     }
 

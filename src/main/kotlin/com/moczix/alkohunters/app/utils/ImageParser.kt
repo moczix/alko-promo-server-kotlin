@@ -7,18 +7,16 @@ import java.net.URL
 import javax.imageio.ImageIO
 import java.awt.image.BufferedImage
 import java.io.File
-import com.sun.deploy.uitoolkit.ToolkitStore.dispose
-import java.awt.Graphics2D
-import org.apache.coyote.http11.Constants.a
-
-
-
+import java.net.URISyntaxException
+import java.net.MalformedURLException
 
 
 
 class ImageParser {
 
-    fun saveFileFromUrl(uri: String, name: String) {
+    private val boxSize = 200
+
+    fun saveFileFromUrl(uri: String, name: String): String {
         ImageIO.write(
                 combineLayer(
                         scaleImage(convertToJpg(getOriginalImage(uri))),
@@ -26,6 +24,7 @@ class ImageParser {
                 ),
                 "jpg",
                 getFileOutput(name))
+        return "/storage/app/alcohol_$name.jpg"
     }
 
     private fun getOriginalImage(uri: String): BufferedImage {
@@ -33,7 +32,7 @@ class ImageParser {
     }
 
     private fun scaleImage(resizedImage: BufferedImage): BufferedImage {
-        return Scalr.resize(resizedImage, 200)
+        return Scalr.resize(resizedImage, boxSize)
     }
 
     private fun convertToJpg(originalImage: BufferedImage): BufferedImage {
@@ -46,11 +45,11 @@ class ImageParser {
     }
 
     private fun getFileOutput(name: String):File {
-        return File("${AppConfig.storagePath}/alcohol_${name}.jpg")
+        return File("${AppConfig.storagePath}/alcohol_$name.jpg")
     }
 
     private fun getWhiteSquare(): BufferedImage {
-        val whiteImage = BufferedImage(200, 200, BufferedImage.TYPE_INT_RGB)
+        val whiteImage = BufferedImage(boxSize, boxSize, BufferedImage.TYPE_INT_RGB)
         val g2d = whiteImage.createGraphics()
         g2d.paint = Color.WHITE
         g2d.fillRect(0,0, whiteImage.width, whiteImage.height)
@@ -62,9 +61,37 @@ class ImageParser {
         val layer = BufferedImage(whiteImage.width, whiteImage.height, BufferedImage.TYPE_INT_RGB)
         val graphicsLayer = layer.graphics
         graphicsLayer.drawImage(whiteImage, 0, 0, null)
-        graphicsLayer.drawImage(originalImage, 0, 0, null)
+        graphicsLayer.drawImage(originalImage, calcOffsetX(originalImage), calcOffsetY(originalImage), null)
         graphicsLayer.dispose()
         return layer
     }
+
+
+    private fun calcOffsetX(originalImage: BufferedImage): Int {
+        return boxSize / 2 - originalImage.width / 2
+    }
+
+    private fun calcOffsetY(originalImage: BufferedImage): Int {
+        return boxSize / 2 - originalImage.height / 2
+    }
+
+    fun isValidURL(url: String): Boolean {
+        var u: URL? = null
+
+        try {
+            u = URL(url)
+        } catch (e: MalformedURLException) {
+            return false
+        }
+
+        try {
+            u.toURI()
+        } catch (e: URISyntaxException) {
+            return false
+        }
+
+        return true
+    }
+
 
 }
